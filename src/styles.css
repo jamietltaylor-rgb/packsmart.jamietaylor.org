@@ -194,3 +194,63 @@
 
 @keyframes tick-pop { 0% { transform: scale(1); } 40% { transform: scale(1.35); } 70% { transform: scale(0.9); } 100% { transform: scale(1); } }
 @utility animate-tick-pop { animation: tick-pop 0.35s ease-out; }
+
+/*
+ * Plain style (the default; Settings -> Style -> Classic switches it off).
+ * A flat, ruled paper-list look: a solid bar of colour across the top, condensed headings, square
+ * corners, rules instead of shadows, underlined fields. It only changes colours, fonts, borders and
+ * shapes, so the layout and behaviour are identical in both styles. These rules are deliberately
+ * outside every @layer so they win over the Tailwind utility classes used in the components.
+ */
+:root:not([data-style="classic"]) {
+  --radius: 0.25rem;
+  --font-display: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --font-sans: "Barlow", system-ui, sans-serif;
+  --gradient-sunset: none;
+  --gradient-foliage: none;
+  --shadow-card: none;
+}
+/* Default colours for the plain style, used until a colour option is picked in Settings. */
+:root:not([data-style="classic"]):not([data-palette]) {
+  --background: oklch(0.985 0.002 100);
+  --foreground: oklch(0.2 0.01 100);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.2 0.01 100);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.2 0.01 100);
+  --primary: oklch(0.52 0.18 29);
+  --primary-foreground: oklch(0.99 0.005 29);
+  --secondary: oklch(0.3 0.01 100);
+  --secondary-foreground: oklch(0.99 0 0);
+  --muted: oklch(0.95 0.004 100);
+  --muted-foreground: oklch(0.45 0.01 100);
+  --accent: oklch(0.93 0.01 100);
+  --accent-foreground: oklch(0.2 0.01 100);
+  --border: oklch(0.85 0.005 100);
+  --input: oklch(0.85 0.005 100);
+  --ring: oklch(0.52 0.18 29);
+}
+:root:not([data-style="classic"]) .classic-only { display: none; }
+:root:not([data-style="classic"]) body { border-top: 10px solid var(--primary); font-variant-numeric: tabular-nums; }
+:root:not([data-style="classic"]) header.bg-sunset { background: transparent; color: var(--foreground); border-bottom: 2px solid var(--foreground); }
+:root:not([data-style="classic"]) header.bg-sunset h1 { font-size: clamp(2.5rem, 11vw, 3.75rem); line-height: 1; font-weight: 700; }
+:root:not([data-style="classic"]) nav[aria-label="Sections"] { border-bottom: 1px solid var(--border); }
+:root:not([data-style="classic"]) h1,
+:root:not([data-style="classic"]) h2,
+:root:not([data-style="classic"]) h3 { font-family: var(--font-display); font-weight: 700; letter-spacing: 0; line-height: 1.05; }
+:root:not([data-style="classic"]) h2.font-display { font-size: 1.75rem; }
+:root:not([data-style="classic"]) h3.font-display { font-size: 1.4rem; }
+:root:not([data-style="classic"]) .border-b.border-border.pb-6 { border-bottom: 2px solid var(--foreground); }
+:root:not([data-style="classic"]) .shadow-card { box-shadow: none; }
+:root:not([data-style="classic"]) .bg-foliage { background-color: var(--primary); }
+:root:not([data-style="classic"]) .rounded-full { border-radius: 0.2rem; }
+:root:not([data-style="classic"]) [role="checkbox"] > span,
+:root:not([data-style="classic"]) [role="progressbar"] { border-radius: 9999px; }
+:root:not([data-style="classic"]) input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not(.font-display),
+:root:not([data-style="classic"]) select,
+:root:not([data-style="classic"]) textarea { border-width: 0 0 2px 0; border-color: var(--foreground); border-radius: 0; background: transparent; }
+:root:not([data-style="classic"]) input:focus-visible,
+:root:not([data-style="classic"]) select:focus-visible,
+:root:not([data-style="classic"]) textarea:focus-visible { border-color: var(--primary); box-shadow: none; outline: none; }
+
+:root:not([data-style="classic"]) button.bg-sunset { background-color: var(--primary); }

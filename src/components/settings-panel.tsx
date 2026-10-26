@@ -10,17 +10,41 @@ export function SettingsPanel({ theme, onChange }: { theme: ThemeChoice; onChang
 
   const selectedPalette = theme.palette ?? ORIGINAL;
   const selectedFont = theme.font ?? "Fraunces";
-  const changed = Boolean(theme.palette || theme.font);
+  const changed = Boolean(theme.palette || theme.font || theme.style);
 
   return (
     <div className="space-y-8">
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border pb-4">
         <div>
           <h2 className="font-display text-2xl font-semibold">Settings</h2>
-          <p className="text-sm text-muted-foreground">Pick the colours and typeface you like. Your choice is remembered on this device.</p>
+          <p className="text-sm text-muted-foreground">Pick the style, colours and typeface you like. Your choice is remembered on this device.</p>
         </div>
-        <Button variant="outline" disabled={!changed} onClick={() => onChange({})}>Reset to original look</Button>
+        <Button variant="outline" disabled={!changed} onClick={() => onChange({})}>Reset to the default look</Button>
       </div>
+
+      <section aria-labelledby="style-heading">
+        <h3 id="style-heading" className="font-display text-lg font-semibold">Style</h3>
+        <div className="mt-3 grid grid-cols-2 gap-3">
+          {([
+            { id: undefined, name: "Plain", hint: "Flat and ruled, like a paper list" },
+            { id: "classic", name: "Classic", hint: "The original: rounded, with a gradient header" },
+          ] as const).map((option) => {
+            const on = (theme.style ?? undefined) === option.id;
+            return (
+              <button
+                key={option.name}
+                type="button"
+                aria-pressed={on}
+                onClick={() => onChange({ ...theme, style: option.id })}
+                className={`rounded-lg border-2 bg-card p-3 text-left ${on ? "border-primary" : "border-border"}`}
+              >
+                <span className="block font-semibold">{option.name}{on ? " ✓" : ""}</span>
+                <span className="block text-sm text-muted-foreground">{option.hint}</span>
+              </button>
+            );
+          })}
+        </div>
+      </section>
 
       <section aria-labelledby="colours-heading">
         <h3 id="colours-heading" className="font-display text-lg font-semibold">Colours</h3>
@@ -72,7 +96,7 @@ export function SettingsPanel({ theme, onChange }: { theme: ThemeChoice; onChang
 
       <section aria-labelledby="preview-heading" className="rounded-xl bg-accent p-5 text-accent-foreground">
         <h3 id="preview-heading" className="text-xs uppercase tracking-wide opacity-75">Preview</h3>
-        <p className="mt-1 font-display text-3xl font-extrabold">Pack Smart ✈️</p>
+        <p className="mt-1 font-display text-3xl font-extrabold">Pack Smart<span className="classic-only"> ✈️</span></p>
         <p className="mt-1 text-sm">Holiday packing lists that know what the weather's doing.</p>
         <div className="mt-3 flex flex-wrap gap-2">
           <span className="rounded-full bg-primary px-3 py-1 text-sm text-primary-foreground">Passport</span>

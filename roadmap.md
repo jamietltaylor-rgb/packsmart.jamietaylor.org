@@ -6,3 +6,4 @@
 - [x] Expand electronics recognition and confirm Other assignments, including bulk additions.
 - [x] Test category rules (26 passing tests).
 - [ ] Verify the signed-in packing flow — blocked until the user signs into the preview; no matching account was available for managed sign-in.
+- [x] Plain look as the default (less templated), with Classic selectable in Settings.

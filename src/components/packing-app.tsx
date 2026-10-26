@@ -118,7 +118,7 @@ export function PackingApp() {
       <header className="bg-sunset text-primary-foreground">
         <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-6 py-8">
           <div>
-          <h1 className="font-display text-3xl font-extrabold md:text-5xl">Pack Smart ✈️</h1>
+          <h1 className="font-display text-3xl font-extrabold md:text-5xl">Pack Smart<span className="classic-only"> ✈️</span></h1>
           <p className="mt-2 opacity-90">Holiday packing lists that know what the weather's doing.</p>
           </div><Button variant="secondary" onClick={signOut} disabled={pending.current > 0 || Boolean(saveError)}><LogOut />Sign out</Button>
         </div>
@@ -371,7 +371,7 @@ function ListEditor({ list, update, remove }: { list: PackList; update: (p: Part
                   onClick={() => { update({ destination: o.name }); loadWeather(o); }}
                   className="h-auto justify-start whitespace-normal rounded-lg px-3 py-2 text-left hover:bg-card"
                 >
-                  📍 {placeLabel(o)}
+                  <span className="classic-only">📍 </span>{placeLabel(o)}
                 </Button>
               ))}
             </div>

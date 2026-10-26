@@ -15,3 +15,4 @@
 - Home-screen support is manifest-only, without an app-shell service worker, because offline use was not requested.
 - Resolve unmatched additions in a category-confirmation dialog before one atomic list update, so cancelling never partially adds a batch.
 - "Generate more ideas" is rule-based (src/lib/packing-ideas.ts): themed idea pools chosen by holiday type, weather, amenities and trip length. It needs no AI service or API key.
+- Look: the default is the Plain style (flat, ruled, Barlow fonts, solid colour bar; CSS at the end of src/styles.css, scoped to :root:not([data-style="classic"])). Settings -> Style -> Classic restores the original rounded/gradient look. Both styles must keep identical layout and behaviour; only colours, fonts, borders and shapes differ. Emoji are wrapped in <span class="classic-only"> so Plain hides them.

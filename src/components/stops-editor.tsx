@@ -206,7 +206,7 @@ export function StopsEditor({
                         onClick={() => { changePlace(stop.id, o.name); void loadWeather(stop.id, o); }}
                         className="h-auto justify-start whitespace-normal rounded-lg px-3 py-2 text-left hover:bg-card"
                       >
-                        📍 {placeLabel(o)}
+                        <span className="classic-only">📍 </span>{placeLabel(o)}
                       </Button>
                     ))}
                   </div>

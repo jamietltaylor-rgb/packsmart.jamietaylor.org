@@ -49,7 +49,10 @@ export const FONTS: FontOption[] = [
   { name: "Big Shoulders Display", family: "Big+Shoulders+Display:wght@800", css: '"Big Shoulders Display", sans-serif' },
 ];
 
-export type ThemeChoice = { palette?: string | undefined; font?: string | undefined };
+/** "plain" is the default flat, ruled look; "classic" is the original rounded, gradient look. */
+export type StyleChoice = "plain" | "classic";
+
+export type ThemeChoice = { palette?: string | undefined; font?: string | undefined; style?: "classic" | undefined };
 
 /** The app's original look. `undefined` palette/font means "leave the built-in styles alone". */
 export const DEFAULT_THEME: ThemeChoice = {};
@@ -64,6 +67,7 @@ export function loadTheme(): ThemeChoice {
     return {
       palette: PALETTES.some((p) => p.name === raw.palette) ? raw.palette : undefined,
       font: FONTS.some((f) => f.name === raw.font) ? raw.font : undefined,
+      style: raw.style === "classic" ? "classic" : undefined,
     };
   } catch {
     return {};
@@ -97,6 +101,8 @@ export function loadFontPreviews() {
 
 export function applyTheme(theme: ThemeChoice) {
   const root = document.documentElement;
+  if (theme.style === "classic") root.dataset["style"] = "classic";
+  else delete root.dataset["style"];
   const palette = PALETTES.find((p) => p.name === theme.palette);
   if (palette) {
     root.dataset["palette"] = palette.name.toLowerCase().replace(/\s+/g, "-");
@@ -107,7 +113,7 @@ export function applyTheme(theme: ThemeChoice) {
     delete root.dataset["palette"];
     root.style.removeProperty("--pal-bg");
     root.style.removeProperty("--pal-ink");
-    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", "#e36e37");
+    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", theme.style === "classic" ? "#e36e37" : "#c93a2a");
   }
   const font = FONTS.find((f) => f.name === theme.font);
   if (font) {
