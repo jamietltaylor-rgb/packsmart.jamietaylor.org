@@ -15,6 +15,10 @@ export type PackList = {
   amenities?: string[] | undefined;
   /** More than one place on the same holiday. Empty/missing = a normal single-destination trip. */
   stops?: Stop[] | undefined;
+  /** Time of day (HH:MM) the person is leaving on startDate, for the "forgotten anything?" reminder. */
+  leaveTime?: string | undefined;
+  /** How many minutes before leaving to remind them (10, 15 or 30). */
+  remindMins?: number | undefined;
 };
 export type WeatherSummary = {
   place: string;

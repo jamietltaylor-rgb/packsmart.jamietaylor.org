@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { InstallInstructions } from "./install-instructions";
 import { StopsEditor, WeatherCard } from "./stops-editor";
 import { SettingsPanel } from "./settings-panel";
+import { LeaveReminderPanel, ReminderBanner } from "./leave-reminder";
 import { applyTheme, loadTheme, saveTheme, type ThemeChoice } from "@/lib/theme";
 import { Camera, ImagePlus, Trash2, LogOut, Plus, Check, ChevronDown, ChevronUp, Sparkles, ListChecks, SlidersHorizontal } from "lucide-react";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
@@ -123,6 +124,7 @@ export function PackingApp() {
           </div><Button variant="secondary" onClick={signOut} disabled={pending.current > 0 || Boolean(saveError)}><LogOut />Sign out</Button>
         </div>
       </header>
+      <ReminderBanner lists={lists} onOpen={(id) => { setActiveId(id); setTab("trips"); }} />
       <nav aria-label="Sections" className="border-b border-border">
         <div className="mx-auto flex max-w-5xl gap-1 px-6 max-md:px-0 lg:max-w-6xl">
           {(["trips", "settings"] as const).map((t) => (
@@ -396,6 +398,7 @@ function ListEditor({ list, update, remove }: { list: PackList; update: (p: Part
         {list.weather && <WeatherCard weather={list.weather} climate={climate} />}
           </>
         )}
+        <LeaveReminderPanel list={list} update={update} field={field} />
       </div>
 
       <div className="border-b border-border pb-6">

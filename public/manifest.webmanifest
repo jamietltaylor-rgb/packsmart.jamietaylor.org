@@ -5,10 +5,11 @@
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "theme_color": "#e36e37",
-  "background_color": "#fff8ed",
+  "theme_color": "#c93a2a",
+  "background_color": "#fcfcfb",
   "icons": [
     { "src": "/icons/pack-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "/icons/pack-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+    { "src": "/icons/pack-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/pack-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }
