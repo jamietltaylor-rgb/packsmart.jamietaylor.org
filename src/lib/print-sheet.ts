@@ -187,3 +187,25 @@ export function dataUrlToBytes(url: string): Uint8Array {
   for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
   return bytes;
 }
+
+// ---------- Handwriting choices for the printable copy ----------
+
+export type PrintFont = { name: string; google: string; css: string; scale: number; note: string };
+
+/** `google` is the Google Fonts family query; `scale` evens out fonts that run big or small. */
+export const PRINT_FONTS: PrintFont[] = [
+  { name: "Caveat", google: "Caveat:wght@500;700", css: '"Caveat", cursive', scale: 1, note: "Quick, loopy handwriting" },
+  { name: "Patrick Hand", google: "Patrick+Hand", css: '"Patrick Hand", cursive', scale: 0.92, note: "Neat, rounded print" },
+  { name: "Indie Flower", google: "Indie+Flower", css: '"Indie Flower", cursive', scale: 0.88, note: "Casual felt-tip" },
+  { name: "Shadows Into Light", google: "Shadows+Into+Light", css: '"Shadows Into Light", cursive', scale: 1, note: "Light, airy pen" },
+  { name: "Nanum Pen Script", google: "Nanum+Pen+Script", css: '"Nanum Pen Script", cursive', scale: 1.15, note: "Thin, fast scrawl" },
+  { name: "Kalam", google: "Kalam:wght@400;700", css: '"Kalam", cursive', scale: 0.88, note: "Marker-pen look" },
+  { name: "Courier Prime", google: "Courier+Prime:wght@400;700", css: '"Courier Prime", "Courier New", monospace', scale: 0.8, note: "Typewriter" },
+  { name: "Plain sans-serif", google: "", css: "Arial, Helvetica, sans-serif", scale: 0.8, note: "Clean and easy to read" },
+];
+
+export const DEFAULT_PRINT_FONT = "Caveat";
+
+export function printFontByName(name: string | null | undefined): PrintFont {
+  return PRINT_FONTS.find((f) => f.name === name) ?? PRINT_FONTS[0]!;
+}

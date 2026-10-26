@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { buildPdf, buildRows, linesOnPage, paginate, wrapRows, tripSubtitle } from "@/lib/print-sheet";
+import { buildPdf, buildRows, printFontByName, PRINT_FONTS, linesOnPage, paginate, wrapRows, tripSubtitle } from "@/lib/print-sheet";
 
 const item = (name: string, packed = false, qty = 1) => ({ id: name, name, qty, packed });
 
@@ -42,5 +42,10 @@ describe("print sheet", () => {
   });
   it("describes the trip", () => {
     expect(tripSubtitle({ destination: "Rome", startDate: "2026-05-01", nights: 1 })).toContain("1 night");
+  });
+  it("falls back to the default handwriting for unknown names", () => {
+    expect(printFontByName("nope").name).toBe("Caveat");
+    expect(printFontByName("Kalam").name).toBe("Kalam");
+    expect(PRINT_FONTS.length).toBeGreaterThan(3);
   });
 });

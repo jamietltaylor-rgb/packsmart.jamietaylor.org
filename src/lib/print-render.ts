@@ -1,32 +1,63 @@
 // Draws the packing list onto canvases that look like pages of lined paper, then saves them as a PDF.
 // Browser only. The layout maths lives in print-sheet.ts.
 
-import { buildPdf, buildRows, dataUrlToBytes, paginate, SHEET, tripSubtitle, wrapRows, type PdfImage, type PrintRow } from "./print-sheet";
+import { buildPdf, buildRows, dataUrlToBytes, DEFAULT_PRINT_FONT, paginate, printFontByName, PRINT_FONTS, SHEET, tripSubtitle, wrapRows, type PdfImage, type PrintFont, type PrintRow } from "./print-sheet";
 import { groupItems, type PackList } from "./packing";
 
-const HAND = '"Caveat", "Segoe Print", "Bradley Hand", "Comic Sans MS", cursive';
+const KEY = "pack-smart-print-font";
+let current: PrintFont = printFontByName(DEFAULT_PRINT_FONT);
 
-async function loadHandwriting(): Promise<void> {
+export function loadPrintFont(): string {
   try {
-    if (!document.getElementById("print-font")) {
+    return printFontByName(localStorage.getItem(KEY)).name;
+  } catch {
+    return DEFAULT_PRINT_FONT;
+  }
+}
+
+export function savePrintFont(name: string) {
+  try {
+    localStorage.setItem(KEY, name);
+  } catch {
+    // Not remembered, but still works for this visit.
+  }
+}
+
+/** Adds one stylesheet that fetches every handwriting option (used for the previews in Settings). */
+export function loadPrintFontPreviews() {
+  if (document.getElementById("print-font-previews")) return;
+  const families = PRINT_FONTS.filter((f) => f.google).map((f) => `family=${f.google}`).join("&");
+  const link = document.createElement("link");
+  link.id = "print-font-previews";
+  link.rel = "stylesheet";
+  link.href = `https://fonts.googleapis.com/css2?${families}&display=swap`;
+  document.head.appendChild(link);
+}
+
+async function loadHandwriting(f: PrintFont): Promise<void> {
+  if (!f.google) return;
+  try {
+    const id = `print-font-${f.name.replace(/\W/g, "")}`;
+    if (!document.getElementById(id)) {
       const link = document.createElement("link");
-      link.id = "print-font";
+      link.id = id;
       link.rel = "stylesheet";
-      link.href = "https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&display=swap";
+      link.href = `https://fonts.googleapis.com/css2?family=${f.google}&display=swap`;
       document.head.appendChild(link);
     }
     await Promise.race([
-      Promise.all([document.fonts.load('500 40px "Caveat"'), document.fonts.load('700 40px "Caveat"')]),
+      Promise.all([document.fonts.load(`500 40px ${f.css}`), document.fonts.load(`700 40px ${f.css}`)]),
       new Promise((resolve) => setTimeout(resolve, 2500)),
     ]);
   } catch {
-    // The fallback handwriting-style fonts are used instead.
+    // The fallback font in the stack is used instead.
   }
 }
 
 function font(kind: PrintRow["kind"]): string {
-  if (kind === "heading") return `700 54px ${HAND}`;
-  return `500 46px ${HAND}`;
+  const px = (n: number) => Math.round(n * current.scale);
+  if (kind === "heading") return `700 ${px(54)}px ${current.css}`;
+  return `500 ${px(46)}px ${current.css}`;
 }
 
 function drawPage(ctx: CanvasRenderingContext2D, rows: PrintRow[], first: boolean, list: PackList, pageNo: number, pages: number, packedText: string) {
@@ -82,11 +113,11 @@ function drawPage(ctx: CanvasRenderingContext2D, rows: PrintRow[], first: boolea
   ctx.fillStyle = "#23304a";
 
   if (first) {
-    ctx.font = `700 92px ${HAND}`;
+    ctx.font = `700 ${Math.round(92 * current.scale)}px ${current.css}`;
     ctx.fillText(list.name || "Packing list", textX - 40, 200, rightX - textX);
     const sub = tripSubtitle(list);
     if (sub) {
-      ctx.font = `500 48px ${HAND}`;
+      ctx.font = `500 ${Math.round(48 * current.scale)}px ${current.css}`;
       ctx.fillStyle = "#4a5a78";
       ctx.fillText(sub, textX - 40, 290, rightX - textX);
     }
@@ -130,7 +161,7 @@ function drawPage(ctx: CanvasRenderingContext2D, rows: PrintRow[], first: boolea
   });
 
   // footer
-  ctx.font = `500 34px ${HAND}`;
+  ctx.font = `500 ${Math.round(34 * current.scale)}px ${current.css}`;
   ctx.fillStyle = "#8a93a6";
   ctx.textAlign = "right";
   ctx.fillText(`${packedText} · Pack Smart${pages > 1 ? ` · page ${pageNo} of ${pages}` : ""}`, rightX, h - 36);
@@ -138,7 +169,8 @@ function drawPage(ctx: CanvasRenderingContext2D, rows: PrintRow[], first: boolea
 }
 
 export async function downloadPrintableList(list: PackList, categories: string[]): Promise<void> {
-  await loadHandwriting();
+  current = printFontByName(loadPrintFont());
+  await loadHandwriting(current);
   const groups = groupItems(list.items, categories);
   const canvas = document.createElement("canvas");
   canvas.width = SHEET.w;

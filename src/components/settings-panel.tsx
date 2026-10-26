@@ -1,5 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { loadPrintFont, loadPrintFontPreviews, savePrintFont } from "@/lib/print-render";
+import { PRINT_FONTS } from "@/lib/print-sheet";
 import { FONTS, PALETTES, loadFontPreviews, type ThemeChoice } from "@/lib/theme";
 
 const ORIGINAL = "Original";
@@ -7,6 +9,8 @@ const ORIGINAL = "Original";
 export function SettingsPanel({ theme, onChange }: { theme: ThemeChoice; onChange: (theme: ThemeChoice) => void }) {
   // Only fetch the full set of fonts when someone opens Settings, so the rest of the app stays light.
   useEffect(() => loadFontPreviews(), []);
+  useEffect(() => loadPrintFontPreviews(), []);
+  const [printFont, setPrintFont] = useState(loadPrintFont);
 
   const selectedPalette = theme.palette ?? ORIGINAL;
   const selectedFont = theme.font ?? "Fraunces";
@@ -88,6 +92,28 @@ export function SettingsPanel({ theme, onChange }: { theme: ThemeChoice; onChang
                 className={`flex min-h-14 items-center rounded-lg border px-3 py-2 text-left text-base ${on ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card hover:border-primary"}`}
               >
                 {f.name}
+              </button>
+            );
+          })}
+        </div>
+      </section>
+
+      <section aria-labelledby="print-font-heading">
+        <h3 id="print-font-heading" className="font-display text-lg font-semibold">Printable list handwriting</h3>
+        <p className="text-sm text-muted-foreground">The writing used on the lined-paper PDF you can download from a trip.</p>
+        <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+          {PRINT_FONTS.map((f) => {
+            const on = printFont === f.name;
+            return (
+              <button
+                key={f.name}
+                type="button"
+                aria-pressed={on}
+                onClick={() => { setPrintFont(f.name); savePrintFont(f.name); }}
+                className={`rounded-lg border px-3 py-2 text-left ${on ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card hover:border-primary"}`}
+              >
+                <span className="block text-xl" style={{ fontFamily: f.css }}>{f.name}</span>
+                <span className={`block text-xs ${on ? "opacity-90" : "text-muted-foreground"}`}>{f.note}</span>
               </button>
             );
           })}
