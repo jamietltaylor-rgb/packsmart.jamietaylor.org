@@ -1,0 +1,24 @@
+PACKSMART UPDATE
+  1. No AI for "Generate more ideas"
+  2. Holidays with several places (nights at each, weather for each)
+  3. Settings tab with the colours and typefaces from your picture
+
+ADD OR REPLACE these files in your GitHub repo (same paths):
+  src/components/packing-app.tsx     replace
+  src/components/settings-panel.tsx  new
+  src/components/stops-editor.tsx    new
+  src/lib/packing.ts                 replace
+  src/lib/packing-ideas.ts           new
+  src/lib/theme.ts                   new
+  src/routes/__root.tsx              replace
+  src/styles.css                     replace
+  src/test/packing-ideas.test.ts     new
+  src/test/packing-stops.test.ts     new
+  AGENTS.md                          replace (optional)
+
+DELETE these from your GitHub repo:
+  src/lib/packing-ideas.functions.ts
+  src/lib/ai/responses.ts
+  src/lib/ai/run-id.ts
+
+No database change is needed: trips are stored as JSON, so the new "stops" data saves as-is.

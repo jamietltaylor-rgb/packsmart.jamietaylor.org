@@ -33,6 +33,11 @@ describe("multi-location trips", () => {
     expect(stopStartDates("2026-02-27", [{ id: "a", place: "", nights: 2 }, { id: "b", place: "", nights: 1 }])).toEqual(["2026-02-27", "2026-03-01"]);
   });
 
+  it("does not crash when the start date is cleared or half typed", () => {
+    expect(stopStartDates("", stops)).toEqual(["", "", ""]);
+    expect(stopStartDates("2026-13-45", stops)).toEqual(["", "", ""]);
+  });
+
   it("covers every climate and the rainy days across stops", () => {
     expect(tripClimates({ stops }).sort()).toEqual(["hot", "mild"]);
     expect(tripRainyDays({ stops })).toBe(2);

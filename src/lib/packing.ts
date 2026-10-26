@@ -106,6 +106,8 @@ export const stopsLabel = (stops: Stop[]) => stops.map((s) => s.place.trim()).fi
 
 /** The date each stop starts on: the trip's start date plus the nights spent at earlier stops. */
 export function stopStartDates(startDate: string, stops: Stop[]): string[] {
+  // A cleared or half-typed date input gives "" — return blanks instead of crashing the page.
+  if (Number.isNaN(new Date(`${startDate}T12:00:00Z`).getTime())) return stops.map(() => "");
   let offset = 0;
   return stops.map((s) => {
     const d = new Date(`${startDate}T12:00:00Z`);
