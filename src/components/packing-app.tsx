@@ -8,7 +8,7 @@ import { StopsEditor, WeatherCard } from "./stops-editor";
 import { SettingsPanel } from "./settings-panel";
 import { LeaveReminderPanel, ReminderBanner } from "./leave-reminder";
 import { applyTheme, loadTheme, saveTheme, type ThemeChoice } from "@/lib/theme";
-import { Camera, ImagePlus, Trash2, LogOut, Plus, Check, ChevronDown, ChevronUp, Sparkles, ListChecks, SlidersHorizontal } from "lucide-react";
+import { Camera, ImagePlus, Trash2, LogOut, Plus, Check, ChevronDown, ChevronUp, Sparkles, ListChecks, SlidersHorizontal, Printer } from "lucide-react";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useEffect, useMemo, useState, useRef } from "react";
 import {
@@ -42,6 +42,7 @@ import {
   uid,
 } from "@/lib/packing";
 import { generateIdeas } from "@/lib/packing-ideas";
+import { downloadPrintableList } from "@/lib/print-render";
 
 export function PackingApp() {
   const { data: saved } = useSuspenseQuery(listsOptions);
@@ -225,6 +226,19 @@ function ListEditor({ list, update, remove }: { list: PackList; update: (p: Part
   const ideas = useMemo(() => suggest(query, names, climate, tripRainyDays(list) > 0, list.tripType ?? "hotel", list.amenities ?? []), [query, names.join(), climate, list.weather, list.tripType, (list.amenities ?? []).join()]);
   const clothes = multi ? clothingForStops(list.stops ?? []) : clothingFor(list.nights, climate);
   const categories = list.categories ?? DEFAULT_CATEGORIES;
+  const [printing, setPrinting] = useState(false);
+  const [printError, setPrintError] = useState("");
+  const printCopy = async () => {
+    setPrinting(true);
+    setPrintError("");
+    try {
+      await downloadPrintableList(list, categories);
+    } catch (e) {
+      setPrintError(e instanceof Error ? e.message : "Couldn't make the printable copy.");
+    } finally {
+      setPrinting(false);
+    }
+  };
   const [newCat, setNewCat] = useState("");
   const [showAllIdeas, setShowAllIdeas] = useState(false);
   const [moreIdeas, setMoreIdeas] = useState<string[]>([]);
@@ -500,6 +514,13 @@ function ListEditor({ list, update, remove }: { list: PackList; update: (p: Part
         ))}
         </div>
         {!list.items.length && <p className="py-6 text-center text-sm text-muted-foreground">Nothing on the list yet.</p>}
+        <div className="mt-8 border-t border-border pt-5">
+          <Button variant="outline" disabled={!list.items.length || printing} onClick={printCopy} className="h-11 rounded-lg px-4 font-medium">
+            <Printer />{printing ? "Making your page…" : "Download a printable copy"}
+          </Button>
+          <p className="mt-2 text-sm text-muted-foreground">A PDF that looks like a handwritten list on lined paper, with ticked items crossed off.</p>
+          {printError && <p className="mt-2 text-sm text-destructive">{printError}</p>}
+        </div>
         <AlertDialog open={!!ask} onOpenChange={(o) => !o && setAsk(null)}>
           <AlertDialogContent>
             <AlertDialogHeader><AlertDialogTitle>Are you sure?</AlertDialogTitle><AlertDialogDescription>{ask?.title}</AlertDialogDescription></AlertDialogHeader>
