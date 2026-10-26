@@ -1,0 +1,8 @@
+- [x] Fix bulk clothes addition and add clear-list control.
+- [x] Add camera/gallery list photos and daily weather.
+- [x] Add login with no email confirmation and account-owned saving.
+- [x] Improve phone layout and add home-screen icon with Safari instructions.
+- [x] Verify packing, photos, account persistence and phone layout.
+- [x] Expand electronics recognition and confirm Other assignments, including bulk additions.
+- [x] Test category rules (26 passing tests).
+- [ ] Verify the signed-in packing flow — blocked until the user signs into the preview; no matching account was available for managed sign-in.
