@@ -47,7 +47,7 @@ export function AuthPanel() {
     } catch (error) { setMessage(error instanceof Error ? error.message : 'Could not sign in.'); }
     finally { setBusy(false); }
   };
-  return <div className="min-h-screen">
+  return <div className="min-h-dvh">
     <header className="bg-sunset text-primary-foreground"><div className="mx-auto max-w-5xl px-6 py-8"><h1 className="flex items-center gap-3 font-display text-4xl font-extrabold"><Luggage className="size-9" />Pack Smart</h1><p className="mt-2">Your next holiday, all packed.</p></div></header>
     <main className="mx-auto max-w-sm px-6 py-10">
       <h2 className="font-display text-2xl">{signedIn ? 'Welcome back' : mode === 'signup' ? 'Create your account' : mode === 'forgot' ? 'Reset your password' : 'Welcome back'}</h2>

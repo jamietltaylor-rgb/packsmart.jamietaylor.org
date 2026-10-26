@@ -254,3 +254,28 @@
 :root:not([data-style="classic"]) textarea:focus-visible { border-color: var(--primary); box-shadow: none; outline: none; }
 
 :root:not([data-style="classic"]) button.bg-sunset { background-color: var(--primary); }
+
+/*
+ * Phone and computer layouts.
+ * Phone (under 768px): the Trips / Settings bar sits at the bottom where a thumb reaches it, the
+ * add-an-item box stays above it while you scroll, and tap targets are bigger.
+ * Computer (768px and up): trips stay in a sticky sidebar, the list uses two columns on wide screens,
+ * and "/" jumps to the add-an-item box. The Tailwind classes in the components do most of this; the
+ * rules here handle the parts that need the device's safe areas.
+ */
+@media (max-width: 767px) {
+  :root:root:root nav[aria-label="Sections"] {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+    background: var(--background); border-bottom: 0; border-top: 2px solid var(--foreground);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  body { padding-bottom: calc(3.5rem + env(safe-area-inset-bottom)); }
+  .add-bar {
+    position: sticky; bottom: calc(3.5rem + env(safe-area-inset-bottom)); z-index: 30;
+    background: var(--background); padding: 0.5rem 0; border-top: 1px solid var(--border);
+  }
+}
+@media (min-width: 768px) {
+  .add-bar { background: transparent; }
+}
+

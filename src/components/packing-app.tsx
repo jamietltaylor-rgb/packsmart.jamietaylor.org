@@ -7,7 +7,7 @@ import { InstallInstructions } from "./install-instructions";
 import { StopsEditor, WeatherCard } from "./stops-editor";
 import { SettingsPanel } from "./settings-panel";
 import { applyTheme, loadTheme, saveTheme, type ThemeChoice } from "@/lib/theme";
-import { Camera, ImagePlus, Trash2, LogOut, Plus, Check, ChevronDown, ChevronUp, Sparkles } from "lucide-react";
+import { Camera, ImagePlus, Trash2, LogOut, Plus, Check, ChevronDown, ChevronUp, Sparkles, ListChecks, SlidersHorizontal } from "lucide-react";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useEffect, useMemo, useState, useRef } from "react";
 import {
@@ -114,9 +114,9 @@ export function PackingApp() {
   };
 
   return (
-    <div className="min-h-screen font-sans">
+    <div className="min-h-dvh font-sans">
       <header className="bg-sunset text-primary-foreground">
-        <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-6 py-8">
+        <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-4 py-5 md:px-6 md:py-8 lg:max-w-6xl">
           <div>
           <h1 className="font-display text-3xl font-extrabold md:text-5xl">Pack Smart<span className="classic-only"> ✈️</span></h1>
           <p className="mt-2 opacity-90">Holiday packing lists that know what the weather's doing.</p>
@@ -124,15 +124,16 @@ export function PackingApp() {
         </div>
       </header>
       <nav aria-label="Sections" className="border-b border-border">
-        <div className="mx-auto flex max-w-5xl gap-1 px-6">
+        <div className="mx-auto flex max-w-5xl gap-1 px-6 max-md:px-0 lg:max-w-6xl">
           {(["trips", "settings"] as const).map((t) => (
             <button
               key={t}
               type="button"
               aria-current={tab === t ? "page" : undefined}
               onClick={() => setTab(t)}
-              className={`border-b-2 px-4 py-3 text-sm font-medium transition-colors ${tab === t ? "border-primary text-foreground" : "border-transparent text-muted-foreground hover:text-foreground"}`}
+              className={`flex items-center border-b-2 px-4 py-3 text-sm font-medium transition-colors max-md:h-14 max-md:flex-1 max-md:flex-col max-md:justify-center max-md:gap-0.5 max-md:border-b-0 max-md:border-t-2 max-md:px-2 max-md:py-1 max-md:text-xs ${tab === t ? "border-primary text-foreground" : "border-transparent text-muted-foreground hover:text-foreground"}`}
             >
+              {t === "trips" ? <ListChecks className="size-5 md:hidden" aria-hidden="true" /> : <SlidersHorizontal className="size-5 md:hidden" aria-hidden="true" />}
               {t === "trips" ? "My trips" : "Settings"}
             </button>
           ))}
@@ -140,16 +141,17 @@ export function PackingApp() {
       </nav>
 
       {tab === "settings" ? (
-        <main className="mx-auto max-w-5xl px-6 py-8">
+        <main className="mx-auto max-w-5xl px-4 py-6 md:px-6 md:py-8 lg:max-w-6xl">
           <SettingsPanel theme={theme} onChange={changeTheme} />
         </main>
       ) : (
-      <main className="mx-auto grid max-w-5xl gap-6 px-6 py-8 md:grid-cols-[220px_1fr]">
-        <aside className="min-w-0 space-y-2">
+      <main className="mx-auto grid max-w-5xl gap-6 px-4 py-6 md:grid-cols-[220px_1fr] md:px-6 md:py-8 lg:max-w-6xl lg:grid-cols-[260px_1fr]">
+        <aside className="min-w-0 space-y-2 md:sticky md:top-4 md:self-start">
           <p role="status" className="text-xs text-muted-foreground">{saveError ? "Changes not saved" : saveState}</p>
           {saveError && <div role="alert" className="text-sm text-destructive">{saveError}<Button variant="outline" onClick={() => setLists([...listsRef.current])}>Retry saving</Button></div>}
           {legacy.length > 0 && <Button variant="outline" className="h-auto w-full whitespace-normal" onClick={() => { const imported = legacy.map(l => ({ ...l, id: crypto.randomUUID() })); setLists([...lists, ...imported]); setLegacy([]); localStorage.removeItem("pack-smart-lists"); }}>Import {legacy.length} lists from this device</Button>}
-          <Button onClick={newList} className="h-auto w-full rounded-xl bg-primary px-4 py-3 font-medium text-primary-foreground shadow-card hover:opacity-90">
+          <div className="flex gap-2 overflow-x-auto pb-1 md:flex-col md:overflow-visible md:pb-0">
+          <Button onClick={newList} className="h-auto w-full max-md:w-auto max-md:shrink-0 rounded-xl bg-primary px-4 py-3 font-medium text-primary-foreground shadow-card hover:opacity-90">
             + New list
           </Button>
           {lists.map((l) => {
@@ -159,7 +161,7 @@ export function PackingApp() {
                 variant="outline"
                 key={l.id}
                 onClick={() => setActiveId(l.id)}
-                className={`h-auto w-full justify-start whitespace-normal rounded-xl border px-4 py-3 text-left transition ${l.id === activeId ? "border-primary bg-card shadow-card" : "border-border bg-muted hover:bg-card"}`}
+                className={`h-auto w-full max-md:w-auto max-md:max-w-[14rem] max-md:shrink-0 justify-start whitespace-normal rounded-xl border px-4 py-3 text-left transition ${l.id === activeId ? "border-primary bg-card shadow-card" : "border-border bg-muted hover:bg-card"}`}
               >
                 {l.photoUrl && <img src={l.photoUrl} alt="" className="size-12 shrink-0 rounded-lg object-cover" />}<div className="min-w-0"><div className="break-words font-medium">{l.name}</div>
                 <div className="text-xs text-muted-foreground">
@@ -168,6 +170,7 @@ export function PackingApp() {
               </Button>
             );
           })}
+          </div>
         </aside>
 
         <section className="min-w-0">
@@ -301,6 +304,19 @@ function ListEditor({ list, update, remove }: { list: PackList; update: (p: Part
     update({ stops, nights: totalNights(stops), destination: stopsLabel(stops), weather: undefined });
   };
 
+  const addRef = useRef<HTMLInputElement>(null);
+  // Computer: press "/" anywhere to jump to the add-an-item box.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const el = e.target as HTMLElement | null;
+      if (e.key !== "/" || e.metaKey || e.ctrlKey || e.altKey) return;
+      if (el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.tagName === "SELECT" || el.isContentEditable)) return;
+      e.preventDefault();
+      addRef.current?.focus();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
   const field = "w-full rounded-lg border border-input bg-background px-3 py-2 outline-none focus:ring-2 focus:ring-ring";
   const packedCount = list.items.filter((i) => i.packed).length;
   const packedPct = list.items.length ? Math.round((packedCount / list.items.length) * 100) : 0;
@@ -410,8 +426,8 @@ function ListEditor({ list, update, remove }: { list: PackList; update: (p: Part
           <div className="mt-1 text-xs text-muted-foreground">{!list.items.length ? "Nothing on your list yet" : packedPct === 100 ? "Everything's packed — have a great trip!" : `${packedCount} of ${list.items.length} ${list.items.length === 1 ? "item" : "items"} packed`}</div>
         </div>
 
-        <form onSubmit={(e) => { e.preventDefault(); add(query); }} className="mt-3 flex gap-2">
-          <input aria-label="Add an item" className={`${field} min-w-0`} placeholder="Add an item…" value={query} onChange={(e) => setQuery(e.target.value)} />
+        <form onSubmit={(e) => { e.preventDefault(); add(query); }} className="add-bar mt-3 flex gap-2">
+          <input ref={addRef} aria-label="Add an item" className={`${field} min-w-0`} placeholder="Add an item…" value={query} onChange={(e) => setQuery(e.target.value)} />
           <Button type="submit" className="h-auto rounded-lg bg-primary px-4 font-medium text-primary-foreground">Add</Button>
         </form>
         {allIdeas.length > 0 && (
@@ -451,19 +467,20 @@ function ListEditor({ list, update, remove }: { list: PackList; update: (p: Part
             <Button type="submit" variant="outline" className="h-auto">Add</Button>
           </form>
         </div>
+        <div className="lg:columns-2 lg:gap-10">
         {groupItems(list.items, categories).map((g) => (
-        <section key={g.name} className="mt-5">
+        <section key={g.name} className="mt-5 break-inside-avoid">
         <h3 className="font-display text-lg font-semibold">{g.name} <span className="text-sm font-normal text-muted-foreground">{g.items.filter((i) => i.packed).length}/{g.items.length}</span></h3>
         <ul className="divide-y divide-border">
           {g.items.map((i) => (
-            <li key={i.id} className="flex flex-wrap items-center gap-3 py-2">
+            <li key={i.id} className="flex flex-wrap items-center gap-3 py-2 max-md:py-3">
               <button type="button" role="checkbox" aria-checked={i.packed} aria-label={`Pack ${i.name}`} onClick={() => { if (!i.packed) setPopped(i.id); update({ items: list.items.map((x) => (x.id === i.id ? { ...x, packed: !x.packed } : x)) }); }} className="flex min-w-0 flex-1 items-center gap-3 rounded-lg py-1 text-left">
                 <span onAnimationEnd={() => setPopped(null)} className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 transition-colors ${i.packed ? "border-primary bg-primary text-primary-foreground" : "border-input"} ${popped === i.id ? "animate-tick-pop" : ""}`}>{i.packed && <Check className="h-5 w-5" />}</span>
                 <span className={`min-w-0 flex-1 break-words transition-all duration-300 ${i.packed ? "text-muted-foreground line-through opacity-70" : ""}`}>{i.name}</span>
               </button>
               <input type="number" aria-label={`Quantity of ${i.name}`} min={1} className="w-16 rounded-md border border-input bg-background px-2 py-1 text-sm" value={i.qty} onChange={(e) => update({ items: list.items.map((x) => (x.id === i.id ? { ...x, qty: Math.max(1, Number(e.target.value) || 1) } : x)) })} />
               <Button variant="ghost" size="icon" onClick={() => confirm(`Remove ${i.name} from the list?`, "Remove", () => update({ items: list.items.filter((x) => x.id !== i.id) }))} className="text-muted-foreground hover:text-destructive" aria-label={`Remove ${i.name}`}>✕</Button>
-              <select aria-label={`Category for ${i.name}`} className="rounded-md border border-input bg-background px-1 py-1 text-xs text-muted-foreground" value={g.name} onChange={(e) => {
+              <select aria-label={`Category for ${i.name}`} className="rounded-md border border-input bg-background px-1 py-1 text-xs text-muted-foreground max-md:min-h-10 max-md:text-sm" value={g.name} onChange={(e) => {
                 const category = e.target.value;
                 const move = () => update({ items: list.items.map((x) => x.id === i.id ? { ...x, category } : x) });
                 if (category === OTHER && g.name !== OTHER) confirm(`Put ${i.name} in Other?`, "Put in Other", move);
@@ -476,6 +493,7 @@ function ListEditor({ list, update, remove }: { list: PackList; update: (p: Part
         </ul>
         </section>
         ))}
+        </div>
         {!list.items.length && <p className="py-6 text-center text-sm text-muted-foreground">Nothing on the list yet.</p>}
         <AlertDialog open={!!ask} onOpenChange={(o) => !o && setAsk(null)}>
           <AlertDialogContent>
