@@ -373,10 +373,12 @@ function ListEditor({ list, update, remove }: { list: PackList; update: (p: Part
             <input type="number" className={field} placeholder="e.g. 7" value={list.nights === 0 ? "" : list.nights} onChange={(e) => update({ nights: e.target.value === "" ? 0 : Number(e.target.value), weather: undefined })} />
           </label>
         </div>
-        <Button variant="ghost" onClick={startMulti} className="mt-2 px-0 text-sm underline-offset-4 hover:underline"><Plus />Visiting more than one place?</Button>
-        <Button variant="secondary" onClick={checkWeather} disabled={loading} className="mt-4 rounded-lg bg-secondary px-4 py-2 font-medium text-secondary-foreground hover:opacity-90 disabled:opacity-60">
-          {loading ? "Checking…" : "Check the weather"}
-        </Button>
+        <div className="mt-5 flex flex-wrap items-center gap-4">
+          <Button variant="outline" onClick={startMulti} className="h-11 rounded-lg border-2 border-primary px-4 font-medium text-primary hover:bg-muted"><Plus />Visiting more than one place?</Button>
+          <Button variant="secondary" onClick={checkWeather} disabled={loading} className="h-11 rounded-lg bg-secondary px-4 py-2 font-medium text-secondary-foreground hover:opacity-90 disabled:opacity-60">
+            {loading ? "Checking…" : "Check the weather"}
+          </Button>
+        </div>
         {error && <p className="mt-2 text-sm text-destructive">{error}</p>}
         {options && (
           <div className="mt-4 rounded-xl border border-border bg-muted p-4">
