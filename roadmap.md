@@ -10,3 +10,4 @@
 - [x] Phone and computer layouts (bottom tab bar and sticky add bar on phones; sidebar and two columns on computers).
 - [x] Leaving time with a "forgotten anything?" reminder (banner, notification, calendar file) and a new home-screen icon.
 - [ ] Reminders when the app is fully closed need server push (a database table, a scheduled job and push keys).
+- [x] Download a printable lined-paper PDF copy of the list.
