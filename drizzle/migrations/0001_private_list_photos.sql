@@ -1,0 +1,3 @@
+CREATE POLICY "Owners read list photos" ON storage.objects FOR SELECT TO authenticated USING (bucket_id = 'list-photos' AND (storage.foldername(name))[1] = auth.uid()::text);
+CREATE POLICY "Owners upload list photos" ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id = 'list-photos' AND (storage.foldername(name))[1] = auth.uid()::text);
+CREATE POLICY "Owners delete list photos" ON storage.objects FOR DELETE TO authenticated USING (bucket_id = 'list-photos' AND (storage.foldername(name))[1] = auth.uid()::text);
