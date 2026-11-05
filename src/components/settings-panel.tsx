@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { openFeedback } from "@/lib/jt-event";
 import { loadPrintFont, loadPrintFontPreviews, savePrintFont } from "@/lib/print-render";
 import { PRINT_FONTS } from "@/lib/print-sheet";
 import { FONTS, PALETTES, loadFontPreviews, type ThemeChoice } from "@/lib/theme";
@@ -118,6 +119,13 @@ export function SettingsPanel({ theme, onChange }: { theme: ThemeChoice; onChang
             );
           })}
         </div>
+      </section>
+
+      {/* Shown only while the owner has the feedback box switched on (see public/jt-stats.js). */}
+      <section aria-labelledby="feedback-heading" className="jt-fb-link hidden flex-col items-start">
+        <h3 id="feedback-heading" className="font-display text-lg font-semibold">Feedback</h3>
+        <p className="mt-1 text-sm text-muted-foreground">Got an idea, or something not working? Tell us.</p>
+        <Button variant="outline" className="mt-3" onClick={openFeedback}>Send feedback</Button>
       </section>
 
       <section aria-labelledby="preview-heading" className="rounded-xl bg-accent p-5 text-accent-foreground">

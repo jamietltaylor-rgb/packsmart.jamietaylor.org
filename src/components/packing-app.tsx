@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { listsOptions, saveLists, uploadPhoto } from "@/lib/cloud-packing";
 import { supabase } from "@/integrations/supabase/client";
 import { InstallInstructions } from "./install-instructions";
+import { trackEvent } from "@/lib/jt-event";
 import { StopsEditor, WeatherCard } from "./stops-editor";
 import { SettingsPanel } from "./settings-panel";
 import { LeaveReminderPanel, ReminderBanner } from "./leave-reminder";
@@ -113,6 +114,7 @@ export function PackingApp() {
     };
     setLists([...lists, l]);
     setActiveId(l.id);
+    trackEvent("trip_created");
   };
 
   return (
@@ -233,6 +235,7 @@ function ListEditor({ list, update, remove }: { list: PackList; update: (p: Part
     setPrintError("");
     try {
       await downloadPrintableList(list, categories);
+      trackEvent("list_printed");
     } catch (e) {
       setPrintError(e instanceof Error ? e.message : "Couldn't make the printable copy.");
     } finally {
@@ -282,6 +285,7 @@ function ListEditor({ list, update, remove }: { list: PackList; update: (p: Part
       return;
     }
     update({ items });
+    additions.forEach(() => trackEvent("item_added"));
     setQuery("");
   };
   const add = (name: string, qty = 1) => {
@@ -551,6 +555,7 @@ function ListEditor({ list, update, remove }: { list: PackList; update: (p: Part
               <AlertDialogAction onClick={() => {
                 if (!pendingAdd) return;
                 update({ items: pendingAdd.items.map((item) => item.id in pendingAdd.choices ? { ...item, category: pendingAdd.choices[item.id] } : item) });
+                for (let n = pendingAdd.items.length - list.items.length; n > 0; n--) trackEvent("item_added");
                 setQuery("");
                 setPendingAdd(null);
               }}>Confirm and add</AlertDialogAction>
