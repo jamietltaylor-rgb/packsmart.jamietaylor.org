@@ -103,6 +103,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: 'apple-touch-icon', href: '/icons/pack-180.png' },
       { rel: 'icon', href: '/icons/pack-192.png', type: 'image/png' },
     ],
+    // Anonymous visit counter + hidden admin panel (5 taps in the bottom-right corner).
+    scripts: [{ src: "/jt-stats.js?v=1", defer: true }],
   }),
   shellComponent: RootShell,
   component: RootComponent,
